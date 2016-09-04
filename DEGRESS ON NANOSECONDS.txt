@@ -1,0 +1,22 @@
+En nanosegundos:
+angulo 180: 
+	apagado: .word 17750000
+	encendido: .word 2250000
+angulo 150:
+	apagado: .word 18125000
+	encendido: .word 1875000
+angulo 120(aprox.)
+	apagado: .word 18500000
+	encendido: .word 1500000
+angulo 90:
+	apagado: .word 18761000
+	encendido: .word 1239000
+angulo 60(aprox.):
+	apagado: .word 19205000
+	encendido: .word 795000
+angulo 30 (aprox.):
+	apagado: .word 19400000
+	encendido: .word 600000
+angulo 0:
+	apagado0: .word 19565000
+	encendido0: .word 435000
