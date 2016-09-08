@@ -7,7 +7,7 @@
 /*main: asignacion GPIO e implementacion de rutinas     */
 /*------------------------------------------------------*/
 
-/*compilar con: gcc -o main phys_to_virt.c gpio0_2.s timeLibV2.c subrutinas.s main.s*/
+/*compilar con: gcc -o mainDos phys_to_virt.c gpio0_2.s timeLibV2.c subrutinasDos.s mainDos.s*/
 @@PUERTOS DE GPIO
 @@-----ENTRADA-----
 @ GPIO 17 = BTN incrementar angulo
@@ -28,6 +28,7 @@ main:
 	mov r1,#1
 	bl SetGpioFunction
 
+@@SUBIR Y BAJAR GRADO
 	@GPIO para lectura puerto 17 
 	mov r0,#17
 	mov r1,#0
@@ -37,6 +38,31 @@ main:
 	mov r0,#27
 	mov r1,#0
 	bl SetGpioFunction	
+@@BOTONES DE MEMORIA
+	@GPIO para lectura puerto 18 
+	mov r0,#27
+	mov r1,#0
+	bl SetGpioFunction
+	@GPIO para lectura puerto 23
+	mov r0,#23
+	mov r1,#0
+	bl SetGpioFunction
+	@GPIO para lectura puerto 24
+	mov r0,#24
+	mov r1,#0
+	bl SetGpioFunction
+	@GPIO para lectura puerto 12
+	mov r0,#12
+	mov r1,#0
+	bl SetGpioFunction
+
+
+
+
+
+
+
+
 @@inicia el servo en 90 grados
 	mov r0, #3
 	bl setPosServo
@@ -52,6 +78,28 @@ mainLoop:
 	bl GetGpio
 	cmp r0,#1
 	bleq dismminuirAngulo
+
+	@@revisar botones de MEMORIA
+		@@mem1
+		mov r0,#18
+		bl GetGpio
+		cmp r0,#1
+		bleq memUno
+		@@mem2
+		mov r0,#23
+		bl GetGpio
+		cmp r0,#1
+		bleq memDos
+		@@mem3
+		mov r0,#24
+		bl GetGpio
+		cmp r0,#1
+		bleq memTres
+		@@mem4
+		mov r0,#12
+		bl GetGpio
+		cmp r0,#1
+		bleq memCuatro
 
 	ldr r0,=posicionActual
 	ldr r0,[r0]
@@ -71,15 +119,19 @@ salida:
 	.global posicionActual
 	posicionActual: .word 3
 
+
 @@----TIMER PARA GRADOS----	
-	.global apagado0,apagado30,apagado60,apagado90,apagado120,apagado150,apagado180
-	.global encendido0,encendido30,encendido60,encendido90,encendido120,encendido150,encendido180
+	.global apagado0,apagado30,apagado45,apagado60,apagado90,apagado120,apagado135,apagado150,apagado180
+	.global encendido0,encendido30,encendido45,encendido60,encendido90,encendido120,encendido135,encendido150,encendido180
 	@@para 0 grados
 	apagado0: .word 19565000
 	encendido0: .word 435000
 	@@para 30 grados
 	apagado30: .word 19400000
 	encendido30: .word 600000
+	@@para 45 grados
+	apagado45: .word 19302500
+	encendido45: .word 697500
 	@@para 60 grados
 	apagado60: .word 19205000
 	encendido60: .word 795000
@@ -89,6 +141,10 @@ salida:
 	@@para 120 grados
 	apagado120: .word 18500000
 	encendido120: .word 1500000
+	@@para 135 grados
+	apagado135: .word 18312500
+	encendido135: .word 1687500
+
 	@@para 150 grados
 	apagado150: .word 18125000
 	encendido150: .word 1875000

@@ -1,5 +1,5 @@
 
-.global  aumentarAngulo, dismminuirAngulo,setPosServo
+.global  aumentarAngulo, dismminuirAngulo,setPosServo,memUno,memDos,memTres,memCuatro
 
 @@reciben en r0: la poscion actual
 setPosServo:
@@ -223,7 +223,116 @@ aumentarAngulo:
 	push {lr}
 	ldr r0, =posicionActual
 	ldr r1,[r0]
-	cmp r1,#7
+	cmp r1,#8
 	addlt r1,r1,#1
 	str r1,[r0]
 	pop {pc}
+
+memUno:
+		push {lr}
+		mov r6,#250
+		ramUno:
+			sub r6,r6,#1
+			cmp r6,#0
+			beq salida
+			push {r6}
+			@encender GPIO 20
+				mov r0,#20
+				mov r1,#1
+				bl SetGpio
+			
+				ldr r0,=encendido0
+				ldr r0,[r0]
+				bl better_sleep
+
+			@apagar GPIO 20
+				mov r0,#20
+				mov r1,#0
+				bl SetGpio
+
+				ldr r0,=apagado0
+				ldr r0,[r0]
+				bl better_sleep
+			pop {r6}
+		b ramUno
+memDos:
+		push {lr}
+		mov r6,#250
+		ramDos:
+			sub r6,r6,#1
+			cmp r6,#0
+			beq salida
+			push {r6}
+			@encender GPIO 20
+				mov r0,#20
+				mov r1,#1
+				bl SetGpio
+			
+				ldr r0,=encendido45
+				ldr r0,[r0]
+				bl better_sleep
+
+			@apagar GPIO 20
+				mov r0,#20
+				mov r1,#0
+				bl SetGpio
+
+				ldr r0,=apagado45
+				ldr r0,[r0]
+				bl better_sleep
+			pop {r6}
+		b ramDos
+memTres:
+		push {lr}
+		mov r6,#250
+		ramTres:
+			sub r6,r6,#1
+			cmp r6,#0
+			beq salida
+			push {r6}
+			@encender GPIO 20
+				mov r0,#20
+				mov r1,#1
+				bl SetGpio
+			
+				ldr r0,=encendido90
+				ldr r0,[r0]
+				bl better_sleep
+
+			@apagar GPIO 20
+				mov r0,#20
+				mov r1,#0
+				bl SetGpio
+
+				ldr r0,=apagado90
+				ldr r0,[r0]
+				bl better_sleep
+			pop {r6}
+		b ramTres
+memCuatro:
+		push {lr}
+		mov r6,#250
+		ramCuatro:
+			sub r6,r6,#1
+			cmp r6,#0
+			beq salida
+			push {r6}
+			@encender GPIO 20
+				mov r0,#20
+				mov r1,#1
+				bl SetGpio
+			
+				ldr r0,=encendido135
+				ldr r0,[r0]
+				bl better_sleep
+
+			@apagar GPIO 20
+				mov r0,#20
+				mov r1,#0
+				bl SetGpio
+
+				ldr r0,=apagado135
+				ldr r0,[r0]
+				bl better_sleep
+			pop {r6}
+		b ramCuatro
