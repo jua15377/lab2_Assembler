@@ -4,7 +4,7 @@
 /*Jonnathan Juarez, Carnet: 15377    				   	*/
 /*Diego Castaneda,  Carnet: 15151 						*/
 /*Laboratorio 2:Control de posiciones de un Servomotor  */ 
-/*main: asignacion GPIO e implementacion de rutinas     */
+/*mainDos (por puntos extras): asignacion GPIO e implementacion de rutinas     */
 /*------------------------------------------------------*/
 
 /*compilar con: gcc -o mainDos phys_to_virt.c gpio0_2.s timeLibV2.c subrutinasDos.s mainDos.s*/
@@ -23,7 +23,8 @@ main:
 	@utilizando la biblioteca GPIO (gpio0_2.s)
 	bl GetGpioAddress @solo se llama una vez
 	
-	@GPIO para escritura puerto 20
+
+	@GPIO para escritura puerto 20 es que  manda la senial al servo
 	mov r0,#20
 	mov r1,#1
 	bl SetGpioFunction
@@ -56,17 +57,19 @@ main:
 	mov r1,#0
 	bl SetGpioFunction
 
+@@ASSCI art  con el logotipo UVG
+	ldr r0,=dibujo1
+	bl puts
 
 
 
 
 
-
-
-@@inicia el servo en 90 grados
+@@inicia el servo en 90 grados *(esto se puuede cambiar)
 	mov r0, #3
 	bl setPosServo
 
+@@loop para revion de botones
 mainLoop:
 	@revisar boton incremto
 	mov r0,#17
@@ -79,7 +82,7 @@ mainLoop:
 	cmp r0,#1
 	bleq dismminuirAngulo
 
-	@@revisar botones de MEMORIA
+	@@revisar botones de MEMORIA (previamente definida)
 		@@mem1
 		mov r0,#18
 		bl GetGpio
@@ -100,7 +103,7 @@ mainLoop:
 		bl GetGpio
 		cmp r0,#1
 		bleq memCuatro
-
+	@@ajusta la poscion si fuese necesario
 	ldr r0,=posicionActual
 	ldr r0,[r0]
 	bl setPosServo
@@ -110,6 +113,8 @@ salida:
 	@salida al SO
 	MOV R7, #1				
 	SWI 0
+
+
 @datos
 .data
 .align 2
@@ -144,10 +149,11 @@ salida:
 	@@para 135 grados
 	apagado135: .word 18312500
 	encendido135: .word 1687500
-
 	@@para 150 grados
 	apagado150: .word 18125000
 	encendido150: .word 1875000
 	@@para 180 grados
 	apagado180: .word 17750000
 	encendido180: .word 2250000
+	@@cadena para generar el assci art con el logo de UVG
+	dibujo1: .asciz "████████████████████████████████████████████████████████████████████████\n█                                                                      ▒\n█                              ▓ ░▒░ ░  ░                              ▒\n█                              █ ▓▓█▓█▓▓█▓░                            ▒\n█                              █░ ▒▒░▓▓▒▓▓▒                            ▒\n█                                                                      ▒\n█        ▒█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█        ▒\n█  ▒▓▓▓▒ ▓▓                                                   █░   ░▓░ ▒\n█  ▓▒░░░ ▓▓                                                   █  ▒██▓  ▒\n█      ░ ▓▒                                                   █     ░  ▒\n█  ░ ░█▒ ▓▓                                                   █     ░░ ▒\n█   ▓█▒  ▓▒                                                   █  ▓▓▓▓▒ ▒\n█  ░▒  ░ ▓▒░▓▓█▓▓▓▓██▓▓▒   ░▓▓████▓▒      ▒▓█████████▓░  █    █  ░  ▒  ▒\n█  ▓▓▓▓▒ ▓▒   ██████▓         ▓██      ░█████▒     ░▓█████    █  ░▓▓▓░ ▒\n█     ▒▒ ▓▓   ▒█████           █▓     █████            ███    █   ▒▒░  ▒\n█  ░██▓░ ▓▒   ▒█████           █▓   ░█████              ██    █  ░ ░▒░ ▒\n█        ▓▓   ▒█████           █▓   █████▓               █    █  ▓▓▓▓░ ▒\n█  ▒▓▓▓▒ ▓▒   ▒█████           █▓  ██████░                    █  ▒▓█▒  ▒\n█  ▓▒▓▒▒ ▓▓   ▒█████           █▓  ██████                     █  ▓▒ ░  ▒\n█  ░     ▓▓   ▒█████           █▓  ██████                     █  ░  ░░ ▒\n█  ▒██▓▒ ▓▓   ▒█████    ▒░     █▓ ░██████░ ░   ░░▒▓▓█▓▓▓▓▓█▓▒ █  ▓███▒ ▒\n█  ▒▓▓▓░ ▓▓   ▒█████    ▒▓██████▓░ ██████▓░▓████▒   ██████▒   █  ▒     ▒\n█  ▒  ▓  ▓▓   ▒█████      ▒█████▒   █████▓  ██▒     ▓█████    █  ▓▒▒▓░ ▒\n█  ▒▒█▒▒ ▓▓    █████▒      ▓█████░   █████░ █▒      ▓█████    █  ▓▒░▒  ▒\n█   ▓░   ▓▓    ░█████░      ██████    ▒█████▓       ▓█████    █    ▒▓░ ▒\n█  ▒▒▓▓▒ ▓▓      ▓█████████████████      ▓████▓▓▓▓▓█████▓▒    █  ▒██▒  ▒\n█  ░▒▒▒░ ▓▓         ░▒▓▓▓▓▒  ░█████▒     ░█ ░▒▓▓▓▓▓▒░         █     ░  ▒\n█  ▓▓▒▓▓ ▓▒                   ▓█████     █░                   █  ░     ▒\n█   ▓▓▓  ▓▓                    ██████   █▓                    █  ▓▓▓▓░ ▒\n█  ░     ▓▒                     █████▓ ██                     █  ▒░▒▒  ▒\n█  ░██▓  ▓▓                     ▒███████                      █  ▒ ░▓░ ▒\n█  ▒▒    ▓▒                      ██████                       █  ▓▓▒▓░ ▒\n█  ▒▓▓▓▒ ▓▒                       ████▒                       █   ▓▓░  ▒\n█  ▒▓▒▓▒ ▒█                       ░██▓                       ░█        ▒\n█   ▒▓▒   ▓▓                       ▓█                       ▒█░        ▒\n█          ▒▓▓▒                                          ░▓▓▓          ▒\n█            ░▓▓▓▒▒                                  ░▒▓▓▓▒            ▒\n█                ░▒▓▓▓▓▒▒▒░░                 ░░▒▒▓▓▓▓▒▒                ▒\n▒▓           ░▒        ░▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒░      ░░░░           █\n ▒█░         █▓░█ █░▒                               ▓░▒▓▒█▒          ░█░\n  ░▓▓░       █░▓▓▒█▒  █▓    ▒█ ░  ▒ ░█   █   █▒▒    ██ █ █▓░▒      ░▓▓░ \n    ▒▓▓▒░        ▓▓░░ █      █▓░ ▓█░ █   █   ██░     █░▒        ░▓▓▓░   \n       ▒▓▓▓▒░         ▒ ▒     █ ▒ ▒█ █░▒░█░▒░▓▒░░           ░▒▓▓▓▒      \n          ░▒▓▓▓▓▒▒░                                   ░▒▒▓▓▓▓▒░         \n               ░▒▒▓▓▓▓▓▒▒▒▒▒░░░ ░       ░ ░░░░▒▒▒▒▓▓▓▓▒▒░               \n                         ░░▒▒▓▒▓▓▓▓▓▓▓▓▓▓▓▒▓▒▒░░                        \n▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒                  ▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓█ \n   ▒░░          ▒░         ░                              ░        ▒▒   \n ░░█░  ▒░░ ░ ▒░▒░ ▒ ▒▒░ ▒░▓  ▓░   ▓▒▒ ▒ ▓▒  █ ▒▒░ ▓ ▒░ ░░▒ ░▒░▒▒  ▒▓ ▒▒ \n  ▓▓ ░ █▒▒▓ █▓░▓▒█░▒▓▓▒█ ░█▓▒█  ▓▒▓░▓▓▓█▒░ ▒█ ▓░▓▒█░▓▓▓  █▓█░▓▓▓▒▓▓░█▓░ \n  ▒░░░░ ▒▒▒ ░  ░ ░   ░ ▒  ░░░░  ░▓▓ ░░ ░    ░ ░ ░░░ ░ ▒  ░░░   ░░░░ ░░  \n                                 ░░                                     \n                                                                        \n                        ░▓█▒   ░▒▓                         ░░░          \n                          ██    ▓ ▒█    ▓█░     ██░     ██  ░██         \n         ▒█░░▒▒ █▓ ░▓▒█▓  ▒█░  ░▒ ▓█▓   ▓█      ██      ██    ░         \n         ░█   █▒█▒    █▒   ██  ▓ ▒ ▒█   ▓█      ██      ██ █▒           \n         ░█   ▓██▒▓▓  █▒   ░█▒ ▒ ▓░░██  ▓█      ██      ██ ▓▒           \n         ░█   █▒█▒    █▒    ██▓ ▓   ▒█░ ▓█    ▓ ██    ▓ ██    ▓         \n         ▒█░░▒▒ █▓ ░▓▒█▒ ░█  █▒░▓    █▓ ▓█░░░▓█ ▓█ ░░▓█ ██░░░▓█         \n                  ░░  ░      ░ ░░   ░  ░░      ░  ░ ░░      ░░          \n                  ░   ▒ ░ ░ ▒  ░ ▒  ▒░ ▒ ░  ░░░   ▒▒ ▒ ░ ░░ ░ ▒         \"

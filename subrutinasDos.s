@@ -1,3 +1,12 @@
+/*------------------------------------------------------*/
+/*Universidad del Valle de Guatemala 				   	*/
+/*Taller de Assembeler, Seccion: 31   				   	*/
+/*Jonnathan Juarez, Carnet: 15377    				   	*/
+/*Diego Castaneda,  Carnet: 15151 						*/
+/*Laboratorio 2:Control de posiciones de un Servomotor  */ 
+/*subrutinasDos: rutinas     */
+/*------------------------------------------------------*/
+
 
 .global  aumentarAngulo, dismminuirAngulo,setPosServo,memUno,memDos,memTres,memCuatro
 
@@ -19,19 +28,22 @@ setPosServo:
 	beq posicionCinco
 	cmpne r0, #6 
 	beq posicionSeis 
-
-	posicionCero:
+@@cada una de las etiquetas posicionees realiza la misma funcion, ajustar el servo segun un  parametro definido
+	posicionCer
+		@contador
 		mov r6,#50
+		@etiqueta a la que regresa para repetir el pulso por un numero finito de veces
 		servoFix1:
 			sub r6,r6,#1
 			cmp r6,#0
+			@slae de la subrutina
 			beq salida
 			push {r6}
 			@encender GPIO 20
 				mov r0,#20
 				mov r1,#1
 				bl SetGpio
-			
+			@delay 
 				ldr r0,=encendido0
 				ldr r0,[r0]
 				bl better_sleep
@@ -40,7 +52,7 @@ setPosServo:
 				mov r0,#20
 				mov r1,#0
 				bl SetGpio
-
+			@delay
 				ldr r0,=apagado0
 				ldr r0,[r0]
 				bl better_sleep
@@ -206,11 +218,11 @@ setPosServo:
 			pop {r6}
 		b servoFix7
 
-
+@@etiqueta general para la salida de las subrutinas
 salida:
 	pop {pc}
 
-
+@@se encargan de revisar si es necesario cambiar la posicion del servo
 dismminuirAngulo:
 	push {lr}
 	ldr r0, =posicionActual
@@ -227,10 +239,10 @@ aumentarAngulo:
 	addlt r1,r1,#1
 	str r1,[r0]
 	pop {pc}
-
+@@PUNTOS EXTRAS sirve para mostrar memorias predefinidas 
 memUno:
 		push {lr}
-		mov r6,#250
+		mov r6,#100
 		ramUno:
 			sub r6,r6,#1
 			cmp r6,#0
@@ -257,7 +269,7 @@ memUno:
 		b ramUno
 memDos:
 		push {lr}
-		mov r6,#250
+		mov r6,#100
 		ramDos:
 			sub r6,r6,#1
 			cmp r6,#0
@@ -284,7 +296,7 @@ memDos:
 		b ramDos
 memTres:
 		push {lr}
-		mov r6,#250
+		mov r6,#100
 		ramTres:
 			sub r6,r6,#1
 			cmp r6,#0
@@ -311,7 +323,7 @@ memTres:
 		b ramTres
 memCuatro:
 		push {lr}
-		mov r6,#250
+		mov r6,#100
 		ramCuatro:
 			sub r6,r6,#1
 			cmp r6,#0
